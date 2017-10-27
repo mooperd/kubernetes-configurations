@@ -1,0 +1,28 @@
+---
+# Source: nginx-ingress/templates/controller-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: nginx-ingress
+    chart: nginx-ingress-0.8.9
+    component: "controller"
+    heritage: Tiller
+    release: prodding-hydra
+  name: prodding-hydra-nginx-ingress-controller
+spec:
+  clusterIP: ""
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: 443
+  selector:
+    app: nginx-ingress
+    component: "controller"
+    release: prodding-hydra
+  type: "LoadBalancer"

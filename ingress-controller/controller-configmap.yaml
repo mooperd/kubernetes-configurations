@@ -1,0 +1,20 @@
+---
+# Source: nginx-ingress/templates/controller-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: nginx-ingress
+    chart: nginx-ingress-0.8.9
+    component: "controller"
+    heritage: Tiller
+    release: prodding-hydra
+  name: prodding-hydra-nginx-ingress-controller
+data:
+  enable-vts-status: "true"
+  enable-vts-status: "true"
+  log-format-upstream: '{"time":"$time_iso8601","status":"$status","remote_user":"$remote_user","request_method":"$request_method","server_protocol":"$server_protocol","host":"$host","uri":"$uri","request":"$request","request_id":"$request_id","args":"$args","request_length":"$request_length","request_time":"$request_time","bytes_sent":"$bytes_sent","body_bytes_sent":"$body_bytes_sent","http_referrer":"$http_referer","http_user_agent":"$http_user_agent","upstream_addr":"$upstream_addr","upstream_response_length":"$upstream_response_length","upstream_response_time":"$upstream_response_time","upstream_status":"$upstream_status","proxy_upstream_name":"$proxy_upstream_name","proxy_protocol_addr":"$proxy_protocol_addr","proxy_add_x_forwarded_for":"$proxy_add_x_forwarded_for"}'
+  proxy-connect-timeout: "20"
+  ssl-redirect: "true"
+  use-gzip: "true"
+  use-http2: "true"

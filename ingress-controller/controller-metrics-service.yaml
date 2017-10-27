@@ -1,0 +1,23 @@
+---
+# Source: nginx-ingress/templates/controller-metrics-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: nginx-ingress
+    chart: nginx-ingress-0.8.9
+    component: "controller"
+    heritage: Tiller
+    release: prodding-hydra
+  name: prodding-hydra-nginx-ingress-controller-metrics
+spec:
+  clusterIP: ""
+  ports:
+    - name: metrics
+      port: 9913
+      targetPort: 9913
+  selector:
+    app: nginx-ingress
+    component: "controller"
+    release: prodding-hydra
+  type: "ClusterIP"

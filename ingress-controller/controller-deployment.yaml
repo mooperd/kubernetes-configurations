@@ -1,0 +1,90 @@
+---
+# Source: nginx-ingress/templates/controller-deployment.yaml
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: nginx-ingress
+    chart: nginx-ingress-0.8.9
+    component: "controller"
+    heritage: Tiller
+    release: prodding-hydra
+  name: prodding-hydra-nginx-ingress-controller
+spec:
+  replicas: 2
+  template:
+    metadata:
+      annotations:
+        checksum/config: f9030d4fecc56703f50bc8ce68765a559537e18bb484676019e10ac0496f77f7
+      labels:
+        app: nginx-ingress
+        component: "controller"
+        release: prodding-hydra
+    spec:
+      containers:
+        - name: nginx-ingress-controller
+          image: "quay.io/aledbf/nginx-ingress-controller:0.269"
+          imagePullPolicy: "IfNotPresent"
+          args:
+            - /nginx-ingress-controller
+            - --default-backend-service=default/prodding-hydra-nginx-ingress-default-backend
+            - --election-id=ingress-controller-leader
+            - --ingress-class=nginx
+            - --configmap=default/prodding-hydra-nginx-ingress-controller
+            - --watch-namespace=default
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 10254
+              scheme: HTTP
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+            - name: https
+              containerPort: 443
+              protocol: TCP
+            - name: stats
+              containerPort: 18080
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 10254
+              scheme: HTTP
+          resources:
+            {}
+            
+        - name: nginx-ingress-stats-exporter
+          image: "quay.io/cy-play/vts-nginx-exporter:v0.0.3"
+          imagePullPolicy: "IfNotPresent"
+          env:
+            - name: METRICS_ADDR
+              value: ":9913"
+            - name: METRICS_ENDPOINT
+              value: "/metrics"
+            - name: METRICS_NS
+              value: "nginx"
+            - name: NGINX_STATUS
+              value: "http://localhost:18080/nginx_status/format/json"
+          ports:
+            - name: metrics
+              containerPort: 9913
+              protocol: TCP
+          resources:
+            {}
+            
+      hostNetwork: false
+      serviceAccountName: "default"
+      terminationGracePeriodSeconds: 60
