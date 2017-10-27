@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    ingress.kubernetes.io/secure-backends: "true"
+    kubernetes.io/ingress.class: nginx
+  name: prodding-hydra-ingress
+spec:
+  rules:
+  - host: dev-andrew.brickblock-dev.io
+    http:
+      paths:
+      - backend:
+          serviceName: prodding-hydra-external-elasticsearch-service
+          servicePort: 443
+        path: /

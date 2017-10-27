@@ -27,11 +27,11 @@ spec:
           imagePullPolicy: "IfNotPresent"
           args:
             - /nginx-ingress-controller
-            - --default-backend-service=default/prodding-hydra-nginx-ingress-default-backend
+            - --default-backend-service=dev-andrew-1/prodding-hydra-nginx-ingress-default-backend
             - --election-id=ingress-controller-leader
             - --ingress-class=nginx
-            - --configmap=default/prodding-hydra-nginx-ingress-controller
-            - --watch-namespace=default
+            - --configmap=dev-andrew-1/prodding-hydra-nginx-ingress-controller
+            - --watch-namespace=dev-andrew-1
           env:
             - name: POD_NAME
               valueFrom:
